@@ -1,4 +1,18 @@
 require 'rack/lobster'
+require 'pg'
+
+begin
+    con = PG.connect :dbname => 'sampledb', :user => 'database', :password => 'database'
+
+    user = con.user
+    db_name = con.db
+    pswd = con.pass
+
+    puts "User: #{user}"
+    puts "Database name: #{db_name}"
+    puts "Password: #{pswd}"
+
+end
 
 map '/health' do
   health = proc do |env|
