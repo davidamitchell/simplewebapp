@@ -2,7 +2,7 @@ require 'rack/lobster'
 require 'pg'
 
 begin
-    con = PG.connect :dbname => 'sampledb', :user => 'database', :password => 'database'
+    con = PG.connect :dbname => 'sampledb', :user => 'userUQ4', :password => 'RbB60VDdVgefxfCo'
 
     user = con.user
     db_name = con.db
@@ -11,6 +11,7 @@ begin
     puts "User: #{user}"
     puts "Database name: #{db_name}"
     puts "Password: #{pswd}"
+    puts ENV
 
 end
 
