@@ -40,8 +40,12 @@ map '/lobster' do
 end
 
 map '/log' do
-    a = con.exec("select table_name from information_schema.tables where table_schema= 'public';")                                                        
-    a.each do |r|                                                                                                                                         
-        puts r.to_s                                                                                                                                           
+    log = proc do |env|
+        a = con.exec("select table_name from information_schema.tables where table_schema= 'public';")                                                        
+        a.each do |r|                                                                                                                                         
+            puts r.to_s                                                                                                                                           
+        end
+        [200, { "Content-Type" => "application/json" }, {'tables': a.map(&:table_name)}]
     end
+    run log
 end
