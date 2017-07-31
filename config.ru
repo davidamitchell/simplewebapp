@@ -45,7 +45,7 @@ map '/log' do
         a.each do |r|                                                                                                                                         
             puts r.to_s                                                                                                                                           
         end
-        [200, { "Content-Type" => "application/json" }, {'tables': a.map(&:table_name)}]
+        [200, { "Content-Type" => "application/json" }, {'tables': a.map{|h| h['table_name']} }]
     end
     run log
 end
