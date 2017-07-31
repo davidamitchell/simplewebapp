@@ -21,7 +21,7 @@ begin
     puts "Password: #{pswd}"
     puts ENV
 
-    con.exec "create table if not exists logs(id integer primary key, message varchar(100));"
+    con.exec "create table if not exists logs(id integer primary key, message varchar(100), created_at timestamp default now());"
     con.exec "create table if not exists accounts(id integer primary key, name varchar(100));"
 
     con.exec "create table if not exists ledger(id integer primary key
@@ -56,7 +56,15 @@ map '/log' do
         a.each do |r|
             puts r.to_s
         end
-        [200, { "Content-Type" => "application/json" }, [{'tables' => a.map{|h| h['table_name']}}.to_json] ]
+        a = con.exec("select message from logs order by created_at desc")
+        a.each do |r|
+            puts r.to_s
+        end
+        res = {}
+        res['tables'] = a.map{|h| h['table_name']}}
+        res['logs'] = l.map{|h| h['message']}}
+
+        [200, { "Content-Type" => "application/json" }, [res.to_json] ]
     end
     log(con, "log")
     run log
