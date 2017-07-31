@@ -38,3 +38,10 @@ end
 map '/lobster' do
   run Rack::Lobster.new
 end
+
+map '/log' do
+    a = con.exec("select table_name from information_schema.tables where table_schema= 'public';")                                                        
+    a.each do |r|                                                                                                                                         
+        puts r.to_s                                                                                                                                           
+    end
+end
