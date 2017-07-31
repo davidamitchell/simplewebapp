@@ -2,7 +2,7 @@ require 'rack/lobster'
 require 'pg'
 
 begin
-    con = PG.connect :dbname => 'sampledb', :user => 'userUQ4', :password => 'RbB60VDdVgefxfCo'
+    con = PG.connect :dbname => 'sampledb', :user => 'userUQ4', :password => 'RbB60VDdVgefxfCo', :host => 'postgresql'
 
     user = con.user
     db_name = con.db
