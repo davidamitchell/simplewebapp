@@ -23,11 +23,6 @@ begin
     puts "Password: #{pswd}"
     puts ENV
 
-
-    con.exec "drop table if exists logs;"
-    con.exec "drop table if exists ledgers;"
-    con.exec "drop table if exists accounts cascade;"
-
     con.exec "create table if not exists logs(id bigserial primary key, message varchar(100), created_at timestamp default now());"
     con.exec "create table if not exists accounts(id bigserial primary key, name varchar(100));"
 
