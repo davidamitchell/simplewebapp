@@ -12,6 +12,14 @@ begin
     puts "Database name: #{db_name}"
     puts "Password: #{pswd}"
     puts ENV
+    
+    con.exec "create table if not exists accounts(id integer primary key, name varchar(100))"
+    
+    con.exec "create table if not exists ledger(id integer primary key
+                                                , fromAccountId integer references accounts(id)
+                                                , toAccountId integer references accounts(id)
+                                                , amount integer
+                                                , description varchar(100))"
 
 end
 
