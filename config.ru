@@ -1,7 +1,7 @@
 require 'rack/lobster'
 require 'pg'
 
-def log(con, msg) do
+def log(con, msg)
   con.exec "insert into logs(message) values(#{msg}) "
 end
 
@@ -61,8 +61,8 @@ map '/log' do
             puts r.to_s
         end
         res = {}
-        res['tables'] = a.map{|h| h['table_name']}}
-        res['logs'] = l.map{|h| h['message']}}
+        res['tables'] = a.map{|h| h['table_name']}
+        res['logs'] = l.map{|h| h['message']}
 
         [200, { "Content-Type" => "application/json" }, [res.to_json] ]
     end
