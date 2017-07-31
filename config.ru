@@ -2,10 +2,7 @@ require 'rack/lobster'
 require 'pg'
 
 begin
-    con = PG.connect :dbname => ENV['POSTGRESQL_DATABASE']
-                   , :host => ENV['POSTGRESQL_SERVICE_HOST']
-                   , :user => ENV['POSTGRESQL_USER']
-                   , :password => ENV['POSTGRESQL_PASSWORD']
+    con = PG.connect :dbname => ENV['POSTGRESQL_DATABASE'], :host => ENV['POSTGRESQL_SERVICE_HOST'], :user => ENV['POSTGRESQL_USER'], :password => ENV['POSTGRESQL_PASSWORD']
                   #  :dbname => 'sampledb'
                   #  , :host => 'postgres'
                   #  , :user => 'userUQ4'
