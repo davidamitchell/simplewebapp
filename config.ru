@@ -66,7 +66,7 @@ map '/log' do
         end
         res = {}
         res['tables'] = a.map{|h| h['table_name']}
-        res['logs'] = l.map{|h| "#{h['message']} -- #{h['created_at']}" }
+        res['logs'] = l.map{|h| "#{h['message']} --xxx #{h['created_at']}" }
 
         logger.log(con, "log")
         [200, { "Content-Type" => "application/json" }, [res.to_json] ]
