@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'ruby-kafka'
 gem 'rake'
 gem 'sinatra'
 gem 'activerecord'
