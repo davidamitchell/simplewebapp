@@ -24,15 +24,15 @@ end
 get '/accounts' do
   puts 'getting accounts'
   if params['owner']
-    Account.where(owner: params['owner']).to_json
+    Account.with_ledger.to_json
   else
     Account.all.to_json
   end
 end
 
 get '/accounts/:accountid' do
-  puts "getting account id: #{params[:accountid]}"
-  "getting account id: #{params[:accountid]}"
+  puts "getting account id: #{params['accountid']}"
+  Account.find(params['accountid']).to_json
 end
 
 post '/accounts' do
@@ -49,8 +49,8 @@ get '/ledgers' do
 end
 
 get '/ledgers/:ledgerid' do
-  puts "getting ledger id: #{params[:ledgerid]}"
-  Ledger
+  puts "getting ledger id: #{params['ledgerid']}"
+  Ledger.find(params['ledgerid']).to_json
 end
 
 post '/ledgers' do
