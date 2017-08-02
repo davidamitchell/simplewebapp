@@ -21,7 +21,7 @@ before do
           params: request.params,
         },
         requestid: uuid
-      }.to_json, topic: "events")
+      }.to_json, topic: "events") unless request.path == '/health'
 end
 
 after do
@@ -34,12 +34,12 @@ after do
           body: response.body
         },
         requestid: uuid
-      }.to_json, topic: "events")
+      }.to_json, topic: "events") unless request.path == '/health'
 
   producer.deliver_messages
 end
 
-get '/' do
+get '/health' do
 end
 
 get '/balances' do
