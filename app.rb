@@ -1,5 +1,5 @@
 require 'json'
-require 'pry'
+
 before do
   content_type :json
 end
