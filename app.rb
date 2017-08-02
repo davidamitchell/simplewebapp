@@ -1,14 +1,41 @@
 require 'json'
+require 'securerandom'
 
-kafka = Kafka.new(seed_brokers: ['localhost:9092', 'localhost:9093', 'localhost:9094'])
+
+kafka = Kafka.new(seed_brokers: ["#{ENV['KAFKA_HOST']}:#{ENV['KAFKA_PORT']}"])
 producer = kafka.producer
 topic = 'events'
+uuid = ''
+
 
 before do
+  uuid = SecureRandom.uuid
   content_type :json
+
+  producer.produce(
+      {
+        eventtype: 'route_called',
+        data: {
+          method: request.request_method,
+          url: request.url,
+          params: request.params,
+        },
+        requestid: uuid
+      }.to_json, topic: "events")
 end
 
 after do
+
+  producer.produce(
+      {
+        eventtype: 'route_responded',
+        data: {
+          status: response.status,
+          body: response.body
+        },
+        requestid: uuid
+      }.to_json, topic: "events")
+
   producer.deliver_messages
 end
 
@@ -16,9 +43,6 @@ get '/' do
 end
 
 get '/balances' do
-  puts 'getting balances'
-  producer.produce({eventtype: 'route_called', data: {route: 'balances', params: params}}.to_json, topic: "events")
-
   a = Account.with_ledger.distinct
   a = a.by_owner(params['owner']) if params['owner']
   a = a.by_name(params['name']) if params['name']
@@ -27,19 +51,16 @@ get '/balances' do
     { account: account, balance: account.ledger.to_a.sum(&:amount) }
   end.to_json
 
-  producer.produce({eventtype: 'balances_returned', data: r}.to_json, topic: "events")
+  producer.produce({eventtype: 'balances_returned', data: r, requestid: uuid}.to_json, topic: "events")
   return r
 end
 
 get '/accounts' do
-  puts 'getting accounts'
-  producer.produce({eventtype: 'route_called', data: {route: 'accounts', params: params}}.to_json, topic: "events")
-
   a = Account.with_ledger
   a = a.by_owner(params['owner']) if params['owner']
   a = a.by_name(params['name']) if params['name']
   r = a.all.to_json
-  producer.produce({eventtype: 'accounts_retrieved', data: r}.to_json, topic: "events")
+  producer.produce({eventtype: 'accounts_retrieved', data: r, requestid: uuid}.to_json, topic: "events")
   return r
 end
 
@@ -53,7 +74,7 @@ post '/accounts' do
   request.body.rewind
   data = JSON.parse request.body.read
   a = Account.create( name: data['name'], owner: data['owner'] )
-  producer.produce({eventtype: 'account_created', data: a.to_json}.to_json, topic: "events")
+  producer.produce({eventtype: 'account_created', data: a, requestid: uuid}.to_json, topic: "events")
   a.to_json
 end
 
