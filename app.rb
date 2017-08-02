@@ -1,5 +1,5 @@
 require 'json'
-
+require 'pry'
 before do
   content_type :json
 end
@@ -9,12 +9,13 @@ end
 
 get '/balances' do
   puts 'getting balances'
+  a = Account.with_ledger
   if params['owner']
-    Account.where(owner: params['owner']).joins(:ledger).includes(:ledger).map do |account|
+    a.by_owner(params['owner']).map do |account|
       { account: account, balance: account.ledger.to_a.sum(&:amount) }
     end
   else
-    Account.joins(:ledger).includes(:ledger).map do |account|
+    a.map do |account|
       { account: account, balance: account.ledger.to_a.sum(&:amount) }
     end
   end.to_json
