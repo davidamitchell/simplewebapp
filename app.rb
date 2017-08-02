@@ -9,25 +9,22 @@ end
 
 get '/balances' do
   puts 'getting balances'
-  a = Account.with_ledger
-  if params['owner']
-    a.by_owner(params['owner']).map do |account|
-      { account: account, balance: account.ledger.to_a.sum(&:amount) }
-    end
-  else
-    a.map do |account|
-      { account: account, balance: account.ledger.to_a.sum(&:amount) }
-    end
+  a = Account.with_ledger.distinct
+  a = a.by_owner(params['owner']) if params['owner']
+  a = a.by_name(params['name']) if params['name']
+
+  a.map do |account|
+    { account: account, balance: account.ledger.to_a.sum(&:amount) }
   end.to_json
 end
 
 get '/accounts' do
   puts 'getting accounts'
-  if params['owner']
-    Account.with_ledger.to_json
-  else
-    Account.all.to_json
-  end
+  a = Account.with_ledger
+  a = a.by_owner(params['owner']) if params['owner']
+  a = a.by_name(params['name']) if params['name']
+
+  a.all.to_json
 end
 
 get '/accounts/:accountid' do
