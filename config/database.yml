@@ -1,5 +1,5 @@
 adapter: 'postgresql'
 host:  <%= ENV['POSTGRESQL_SERVICE_HOST'] %>
 user:  <%= ENV['POSTGRESQL_USER'] %>
-user:  <%= ENV['POSTGRESQL_PASSWORD'] %>
+password:  <%= ENV['POSTGRESQL_PASSWORD'] %>
 database:  <%= ENV['POSTGRESQL_DATABASE'] %>
