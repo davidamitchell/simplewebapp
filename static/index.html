@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Frontend</title>
+  <link rel="stylesheet" href="/stylesheets/main.css">
+  <script src="/javascripts/angular.min.js"></script>
+</head>
+<body>
+  <div ng-controller="appCtrl" ng-app="myapp" class="" >
+    <h1>Frontend</h1>
+    <section class="accounts">
+      <h3>Accounts</h3>
+
+      <section class="blocks">
+        <div ng-repeat="a in accounts" class="account">
+          <span>{{a.account.name}}</span>
+          <span>{{a.account.owner}}</span>
+          <span>${{a.balance}}</span>
+        </div>
+      </section>
+      <!-- <table>
+        <thead>
+          <tr>
+            <th ng-repeat="h in ['Account name','Owner','Balance','Created']">{{h}}</th>
+          </tr>
+        </thead>
+        <tr ng-repeat="a in accounts">
+          <td>{{a.account.name}}</td>
+          <td>{{a.account.owner}}</td>
+          <td></td>
+          <td>{{a.account.created_at | date:'dd/MM/yyyy @ H:mm'}}</td>
+        </tr>
+      </table> -->
+      <input ng-model="name" placeholder="account name"/>
+      <input ng-model="owner" placeholder="user name"/>
+      <button ng-disabled="name=='' || owner ==''" ng-click="addAccount(name, owner)">add</button>
+    </section>
+  </div>
+
+</body>
+
+<script>
+angular.module('myapp', [])
+.config(['$locationProvider', function($locationProvider) {
+  $locationProvider.html5Mode({
+   enabled: true,
+   requireBase: false
+  });
+}])
+.controller('appCtrl', function($scope, $http, $location) {
+  console.log("loaded");
+  $scope.accounts = [];
+  var uri = '/balances';
+  console.log($location.search())
+  if ($location.search().owner){
+    uri += "?owner="+$location.search().owner;
+  }
+  $http.get(uri).then(
+    function(data){
+      console.log(data)
+      $scope.accounts = data.data.balances;
+    },
+    function(err){
+      console.log(err)
+  });
+
+  $scope.addAccount = function addAccount(name, owner){
+    var data = {
+      name: name,
+      owner: owner
+    }
+    $http.post('/accounts',data).then(
+      function(data){
+        console.log(data)
+        $scope.accounts.push({account: data.data.account, balance: 0})
+        $scope.name = '';
+        $scope.owner = '';
+
+      },
+      function(err){
+        console.log(err)
+    });
+
+  }
+
+
+});
+
+
+</script>
+</html>

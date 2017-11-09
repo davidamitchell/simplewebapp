@@ -21,13 +21,19 @@ ActiveRecord::Schema.define(version: 201708011501030) do
     t.string   "owner"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "uid",        null: false
   end
+
+  add_index "accounts", ["uid"], name: "index_accounts_on_uid", unique: true, using: :btree
 
   create_table "ledgers", force: :cascade do |t|
     t.integer  "account_id"
     t.integer  "amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "uid",        null: false
   end
+
+  add_index "ledgers", ["uid"], name: "index_ledgers_on_uid", unique: true, using: :btree
 
 end

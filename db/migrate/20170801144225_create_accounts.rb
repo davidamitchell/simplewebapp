@@ -4,6 +4,8 @@ class CreateAccounts < ActiveRecord::Migration
       t.string :name
       t.string :owner
       t.timestamps null: false
+      t.string :uid, null: false
     end
+    add_index :accounts, [ :uid ], :unique => true
   end
 end
