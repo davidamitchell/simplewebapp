@@ -15,22 +15,24 @@ kafka = Kafka.new(seed_brokers: brokers)
 # Consumers with the same group id will form a Consumer Group together.
 consumer = kafka.consumer(group_id: "frontend")
 
+topic = "account_events"
+
 # It's possible to subscribe to multiple topics by calling `subscribe`
 # repeatedly.
-consumer.subscribe("events", start_from_beginning: true)
+consumer.subscribe(topic, start_from_beginning: true)
 
 # Stop the consumer when the SIGTERM signal is sent to the process.
 # It's better to shut down gracefully than to kill the process.
 trap("TERM") {
-  puts 'shutting down the consumer'
+  puts 'shutting down the consumer TERM'
   consumer.stop
 }
 trap("INT") {
-  puts 'shutting down the consumer'
+  puts 'shutting down the consumer INT'
   consumer.stop
 }
 
-kafka.each_message(topic: "events") do |message|
+kafka.each_message(topic: topic) do |message|
     m = JSON.parse(message.value)
     # puts m
     if m['eventtype'] == 'account_created'
@@ -38,7 +40,7 @@ kafka.each_message(topic: "events") do |message|
       a = Account.find_by_uid(m['requestid'])
       if a.nil?
         puts "creating new account from event"
-        puts data
+        puts m
         puts
         a = Account.create( name: data['name'], owner: data['owner'], uid: m['requestid'] )
       end

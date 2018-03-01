@@ -4,7 +4,7 @@ require 'securerandom'
 brokers = ["#{ENV['KAFKA_HOST']}:#{ENV['KAFKA_PORT']}"]
 kafka = Kafka.new(seed_brokers: brokers)
 producer = kafka.producer
-topic = 'events'
+topic = 'account_events'
 uuid = ''
 
 set :public_folder, 'static'
